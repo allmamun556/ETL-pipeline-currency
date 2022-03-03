@@ -1,0 +1,235 @@
+import numpy as np
+
+
+
+
+''' Transform price which has BTC, ETH, XRP and LTC in the dataset and 
+convert price great bretain pound(GBP) '''
+
+
+def convert_us_to_gbp(crypto_df, assetsCode):
+    # coverting open, close, high and low price of crypto currencies into GBP values since current price is in Dollars
+    # if currency belong to this list ['BTC','ETH','XRP','LTC']
+    crypto_df['open'] = crypto_df[['open', 'asset']].apply(lambda x: (float(x[0]) * 0.80) if x[1] in assetsCode else np.nan, axis=1)
+    crypto_df['close'] = crypto_df[['close', 'asset']].apply(lambda x: (float(x[0]) * 0.80) if x[1] in assetsCode else np.nan, axis=1)
+    crypto_df['high'] = crypto_df[['high', 'asset']].apply(lambda x: (float(x[0]) * 0.80) if x[1] in assetsCode else np.nan, axis=1)
+    crypto_df['low'] = crypto_df[['low', 'asset']].apply(lambda x: (float(x[0]) * 0.80) if x[1] in assetsCode else np.nan, axis=1)
+
+    # dropping rows with null values by asset column
+
+    crypto_df.dropna(inplace=True)
+
+    # reset the data frame index
+    crypto_df.reset_index(drop=True ,inplace=True)
+    crypto_df.head()
+    #print(crypto_df)
+    return crypto_df
+
+
+
+
+def required_column(crypto_df):
+    crypto_df.drop(labels=['slug', 'ranknow', 'volume', 'market', 'close_ratio', 'spread'], inplace=True, axis=1)
+    #print(crypto_df.head())
+    return crypto_df
+
+
+
+class BaseTransformer:
+    # class attribute
+    species="bird"
+    # instance attribute
+    # These attributes are defined inside the __init__ method of the class.It is the initializer 
+    # method and that is first run as soon as the object is created.
+    def __init__(self,name,age):
+        self.name=name
+        self.age=age
+
+
+    '''Methods are functions define inside the body of a class. They are used to define the behaviors of an object'''
+    #instance method
+    def sing(self, song):
+        return "{} sings {}".format(self.name, song)
+
+    def convert_us_to_gbp(self,crypto_df, assetsCode):
+    # coverting open, close, high and low price of crypto currencies into GBP values since current price is in Dollars
+    # if currency belong to this list ['BTC','ETH','XRP','LTC']
+        crypto_df['open'] = crypto_df[['open', 'asset']].apply(lambda x: (float(x[0]) * 0.80) if x[1] in assetsCode else np.nan, axis=1)
+        crypto_df['close'] = crypto_df[['close', 'asset']].apply(lambda x: (float(x[0]) * 0.80) if x[1] in assetsCode else np.nan, axis=1)
+        crypto_df['high'] = crypto_df[['high', 'asset']].apply(lambda x: (float(x[0]) * 0.80) if x[1] in assetsCode else np.nan, axis=1)
+        crypto_df['low'] = crypto_df[['low', 'asset']].apply(lambda x: (float(x[0]) * 0.80) if x[1] in assetsCode else np.nan, axis=1)
+
+        # dropping rows with null values by asset column
+
+        crypto_df.dropna(inplace=True)
+
+        # reset the data frame index
+        crypto_df.reset_index(drop=True ,inplace=True)
+        crypto_df.head()
+        #print(crypto_df)
+        return crypto_df
+
+    def required_column(self,crypto_df):
+        crypto_df.drop(labels=['slug', 'ranknow', 'volume', 'market', 'close_ratio', 'spread'], inplace=True, axis=1)
+        #print(crypto_df.head())
+        return crypto_df    
+
+
+
+ #Object of BaseTransformer class
+ #object is an instantiation of a class
+ #When  a class is defined , only the description for the object is efined. Therefore, no memory or storage is allocated.
+
+obj_from_basetransformer=BaseTransformer("blu",10)  
+
+obj_from_basetransformer_2=BaseTransformer("green",10) 
+
+#Access the class attributes
+print("{}".format(obj_from_basetransformer.__class__.species)) 
+
+#Access the instance attribute
+print("{} {}".format(obj_from_basetransformer.name, obj_from_basetransformer.age))
+print(obj_from_basetransformer.name)
+print(obj_from_basetransformer.age)
+print(obj_from_basetransformer.__class__.species)
+
+#instance attributes are different for every instance of a  class
+print(obj_from_basetransformer_2.name)
+
+
+# call our instance methods
+#here sing() is called instance methods because its called on an instance object ex. obj_from_basetransformer
+print(obj_from_basetransformer.sing("Happy"))
+print(obj_from_basetransformer_2.sing("Happy"))
+
+
+#inheritance
+'''Inheritance is a way of creating a new class for using details of an existing class without modifying it. The 
+newly formed class is a derived call(or child class). Similarly, the existing class is a base class(or parent class)'''
+
+
+
+
+ 
+
+
+
+ # parent class
+class Bird:
+    
+    def __init__(self):
+        print("Bird is ready")
+
+    def whoisThis(self):
+        print("Bird")
+
+    def swim(self):
+        print("Swim faster")
+
+# child class
+#Here this child class inherits the functions of parents class.
+class Penguin(Bird):
+
+    def __init__(self):
+        # call super() function
+        #We use super() function inside the __init__() method. This allows us to run the __init__() 
+        #method of the parent class inside the child class.
+        super().__init__()
+        print("Penguin is ready")
+
+    def whoisThis(self):
+        print("Penguin")
+
+    def run(self):
+        print("Run faster")
+
+peggy = Penguin()
+peggy.whoisThis()
+peggy.swim() # inheritencing methond from the parent class
+peggy.run() # extend the functions of the parent class, by creating a new run() method and whoisThis() method.
+
+
+
+#Encapsulation
+#Restrict direct modification of data
+'''
+Using OOP in Python, we can restrict access to methods and variables. This prevents data from direct modification which is
+ called encapsulation. In Python, we denote private attributes using underscore as the prefix ie single _or double __.
+'''
+
+class Computer:
+
+    def __init__(self):
+        self.__maxprice = 900 # Assinging the value to the variable directly here.Here it is a privet variable.
+
+    def sell(self):
+        print("Selling Price: {}".format(self.__maxprice))
+
+    def setMaxPrice(self, price):
+        self.__maxprice = price
+
+c = Computer()
+print(c.sell())
+
+# change the price
+c.__maxprice = 1000 # trying to  modify  outside of the class.But, it wont work.
+print(c.sell())
+
+# using setter function
+c.setMaxPrice(1000) # setting function inside the class and then if we call the function it will work.
+print(c.sell())
+
+
+
+#polymorphism 
+'''Polymorphism is an ability (in OOP) to use a common interface for multiple forms (data types).
+
+Suppose, we need to color a shape, there are multiple shape options (rectangle, square, circle). However we could use the same method to color any shape.
+ This concept is called Polymorphism.'''
+
+
+
+
+class Parrot:
+
+    def fly(self):
+        print("Parrot can fly")
+    
+    def swim(self):
+        print("Parrot can't swim")
+
+class Penguin:
+
+    def fly(self):
+        print("Penguin can't fly")
+    
+    def swim(self):
+        print("Penguin can swim")
+
+# common interface
+def flying_test(bird):
+    bird.fly()
+
+#instantiate objects
+blu = Parrot()
+peggy = Penguin()
+
+# passing the object
+flying_test(blu)
+flying_test(peggy)
+
+
+
+'''In the above program, we defined two classesparrototherpenguin. Each of them have a common fly()method. 
+However, their functions are different.
+
+To use polymorphism, we created a common interface ie flying_test()function that takes any object and calls the object's fly()method. 
+Thus, when we passed thebluotherpeggyobjects in the flying_test()function, it ran effectively.'''
+
+
+
+'''Key points to remember:
+Object-Oriented Programming makes the program easy to understand as well as efficient.
+Since the class is sharable, the code can be reused.
+Data is safe and secure with data abstraction.
+Polymorphism allows the same interface for different objects, so programmers can write efficient code.'''
